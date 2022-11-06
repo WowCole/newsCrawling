@@ -15,6 +15,7 @@ import requests
 news_site = input()
 
 class_name=ws.find_site(news_site)
+
 req = requests.get(news_site)
 html=req.text
 soup = BeautifulSoup(html, 'html.parser')
