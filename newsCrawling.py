@@ -15,11 +15,11 @@ import requests
 news_site = input()
 
 class_name=ws.find_site(news_site)
-
-req = requests.get(news_site)
+headers = {"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36"}
+req = requests.get(news_site,headers=headers)
 html=req.text
 soup = BeautifulSoup(html, 'html.parser')
-soup.figcaption.decompose()
+
 
 title_text = soup.select_one(
     class_name[0]
