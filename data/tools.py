@@ -59,13 +59,12 @@ def check_page(url):
             new_news_lists=new_soup.find(class_="type06_headline").find_all('a')+soup.find(class_="type06").find_all('a')
             for i in grab_link(new_news_lists):
                 temp.link.append(i)
-
         return print(temp.link)
 
     #기사 리스트 유무
 
     #페이지 수 확인
 def grab_link(link):
-    news_lists_links=list(set([link[i].get('href')+","for i in range(len(link))]))
+    news_lists_links=list(set([link[i].get('href')for i in range(len(link))]))
      #기사 리스트 유무
     return news_lists_links

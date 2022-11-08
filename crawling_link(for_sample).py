@@ -11,7 +11,6 @@ from tqdm import tqdm
 import sys
 import pandas as pd
 
-
 #네이버 기본 링크 생성
 dateRange=setting.dateRange
 category_code =setting.category_code
@@ -28,9 +27,13 @@ for url in category_url:
 for link in tqdm(category_url_date):
     tools.check_page(link)
 
+#기간별 전체 뉴스 링크 저장
+temp_link=pd.DataFrame({
+    "link":temp.link
+})
+temp_link.to_csv("./save/links.csv",encoding="UTF-8",index=False)
 
-with open("./save/newslinks.txt","w") as file:
-    file.writelines(temp.link)
+
 
 
 
