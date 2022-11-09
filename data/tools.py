@@ -29,6 +29,7 @@ def find_site(url):
             title= pb.news[i]["title"]
             contents=pb.news[i]["contents"]
             return [title,contents]
+
 def get_title_contents(news_site):
     try:
         class_name=find_site(news_site)
@@ -36,7 +37,17 @@ def get_title_contents(news_site):
         title_text = soup.select_one(class_name[0]).text
         contents_text = str(soup.select_one(class_name[1]))
         contents_text=[i for i in contents_text.split("<br/>") if len(i) >1 and "class=" not in i and "id="not in i and "span" not in i and "strong" not in i]
-        
+        new_news=[]
+        remover=["\n","\t","</div>","\'"]
+        for i in range(len(contents_text)):
+            line=contents_text[i].strip()
+            for j in remover:
+                line=line.replace(j,"")
+            new_news.append(line)
+        seperator=","
+        seperator.join(new_news)
+        contents_text=new_news
+
     except AttributeError as err:
         return None
     else:
