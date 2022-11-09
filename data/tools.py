@@ -14,7 +14,6 @@ def date_range(start, end):
     return dates
 
 #페이지 수 계산
-
 def soup_page(url):
     import requests
     headers = {"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36"}
@@ -35,7 +34,9 @@ def get_title_contents(news_site):
         class_name=find_site(news_site)
         soup=soup_page(news_site)
         title_text = soup.select_one(class_name[0]).text
-        contents_text = soup.select_one(class_name[1]).text
+        contents_text = str(soup.select_one(class_name[1]))
+        contents_text=[i for i in contents_text.split("<br/>") if len(i) >1 and "class=" not in i and "id="not in i and "span" not in i and "strong" not in i]
+        
     except AttributeError as err:
         return None
     else:
@@ -59,9 +60,8 @@ def check_page(url):
             new_news_lists=new_soup.find(class_="type06_headline").find_all('a')+soup.find(class_="type06").find_all('a')
             for i in grab_link(new_news_lists):
                 temp.link.append(i)
-        return print(temp.link)
+        return 
 
-    #기사 리스트 유무
 
     #페이지 수 확인
 def grab_link(link):

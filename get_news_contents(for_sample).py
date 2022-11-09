@@ -5,6 +5,7 @@ import pandas as pd
 
 links=pd.read_csv("./save/links.csv")
 file=links.link
+#샘플 갯수 선택
 file=file[:10]
 
 title=[]
