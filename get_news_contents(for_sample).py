@@ -14,8 +14,8 @@ content=[]
 for link in tqdm(file):
     text=tools.get_title_contents(link)
     if text!=None:
-        title.append(text[0])
-        content.append(text[1])
+        title.append(text["title"])
+        content.append(text["contents"])
 
         
 df = pd.DataFrame({

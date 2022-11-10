@@ -65,7 +65,7 @@ def get_title_contents(news_site):
                 line=line.replace(j,"")
             new_news.append(line)
         seperator=","
-        news_info["contents"]=seperator.join(new_news)
+        news_info["contents"]=seperator.join(new_news).replace(","," ")
 
 
         #img
@@ -73,7 +73,7 @@ def get_title_contents(news_site):
         
        
         #reporter
-        news_info["reporter"]=soup.select_one(class_name["reporter"]).text
+        news_info["reporter"]=soup.select_one(class_name["reporter"]).text[:3]
     except AttributeError as err:
         return None
     else:
