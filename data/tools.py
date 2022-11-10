@@ -39,7 +39,9 @@ def get_title_contents(news_site):
 
         if class_name["name"]=="naver":
             #time
-            news_info["time"]=soup.select_one(class_name["time"][0]).get(class_name["time"][1])
+            temp_time=soup.select_one(class_name["time"][0]).get(class_name["time"][1])
+            date_time_str = temp_time
+            news_info["time"]=datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
             #press
             news_info["press"]=soup.select_one(class_name["press"][0]).get(class_name["press"][1])
             #contents
@@ -49,9 +51,9 @@ def get_title_contents(news_site):
             #time
             temp_time=soup.select_one(class_name["time"]).text+":00"
             date_time_str = temp_time
-            date_time_obj = datetime.datetime.strptime(date_time_str, '%Y. %m. %d. %H:%M:%S')
-            news_info["time"]=date_time_obj.strftime("%Y-%m-%d %H:%M:%S")
-            
+            news_info["time"]=datetime.datetime.strptime(date_time_str, '%Y. %m. %d. %H:%M:%S')
+            # date_time_obj = datetime.datetime.strptime(date_time_str, '%Y. %m. %d. %H:%M:%S')
+            # news_info["time"]=date_time_obj.strftime("%Y-%m-%d %H:%M:%S")
             #press
             news_info["press"]=soup.select_one(class_name["press"][0]).text
             #contents
@@ -81,7 +83,12 @@ def get_title_contents(news_site):
 
 # 매일 크롤링
 def daily_news_grab():
-    return
+    daum="https://news.daum.net"
+    soup=soup_page(daum)
+    count=10
+    links=[soup.select(".item_issue > a")[i].get("href") for i in range(count)]
+    articles=[get_title_contents(i)for i in links]
+    return articles
 
 def check_page(url):
     try:
