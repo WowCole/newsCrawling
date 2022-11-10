@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import data.publisher as pb
 import data.temp as temp
-
+import datetime
 # dates = date_range("20210101", "20210109")
 
 # 날짜 범위 계산
@@ -26,17 +26,37 @@ def soup_page(url):
 def find_site(url):
     for i in range(len(pb.news)):
         if pb.news[i]["name"] in url:
-            title= pb.news[i]["title"]
-            contents=pb.news[i]["contents"]
-            return [title,contents]
+            return pb.news[i]
+
 
 def get_title_contents(news_site):
     try:
+        news_info={}
         class_name=find_site(news_site)
         soup=soup_page(news_site)
-        title_text = soup.select_one(class_name[0]).text
-        contents_text = str(soup.select_one(class_name[1]))
-        contents_text=[i for i in contents_text.split("<br/>") if len(i) >1 and "class=" not in i and "id="not in i and "span" not in i and "strong" not in i]
+        #title
+        news_info["title"] = soup.select_one(class_name["title"]).text
+
+        if class_name["name"]=="naver":
+            #time
+            news_info["time"]=soup.select_one(class_name["time"][0]).get(class_name["time"][1])
+            #press
+            news_info["press"]=soup.select_one(class_name["press"][0]).get(class_name["press"][1])
+            #contents
+            contents_text = str(soup.select_one(class_name["contents"]))
+            contents_text=[i for i in contents_text.split("<br/>") if len(i) >1 and "class=" not in i and "id="not in i and "span" not in i and "strong" not in i]
+        elif class_name["name"]=="daum":
+            #time
+            temp_time=soup.select_one(class_name["time"]).text+":00"
+            date_time_str = temp_time
+            date_time_obj = datetime.datetime.strptime(date_time_str, '%Y. %m. %d. %H:%M:%S')
+            news_info["time"]=date_time_obj.strftime("%Y-%m-%d %H:%M:%S")
+            
+            #press
+            news_info["press"]=soup.select_one(class_name["press"][0]).text
+            #contents
+            contents_text=soup.select(class_name["contents"])
+            contents_text= [i.text.strip() for i in contents_text]
         new_news=[]
         remover=["\n","\t","</div>","\'"]
         for i in range(len(contents_text)):
@@ -45,13 +65,19 @@ def get_title_contents(news_site):
                 line=line.replace(j,"")
             new_news.append(line)
         seperator=","
-        seperator.join(new_news)
-        contents_text=new_news
+        news_info["contents"]=seperator.join(new_news)
 
+
+        #img
+        news_info["img"]=soup.select_one(class_name["img"][0]).get(class_name["img"][1])
+        
+       
+        #reporter
+        news_info["reporter"]=soup.select_one(class_name["reporter"]).text
     except AttributeError as err:
         return None
     else:
-        return [title_text,contents_text]
+        return news_info
 
 # 매일 크롤링
 def daily_news_grab():
