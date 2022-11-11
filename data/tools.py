@@ -88,6 +88,8 @@ def daily_news_grab():
     count=10
     links=[soup.select(".item_issue > a")[i].get("href") for i in range(count)]
     articles=[get_title_contents(i)for i in links]
+    for i in range(len(articles)):
+        articles[i]["link"]=links[i]
     return articles
 
 def check_page(url):
@@ -107,7 +109,7 @@ def check_page(url):
         return 
 
 
-    #페이지 수 확인
+#페이지 수 확인
 def grab_link(link):
     news_lists_links=list(set([link[i].get('href')for i in range(len(link))]))
      #기사 리스트 유무
